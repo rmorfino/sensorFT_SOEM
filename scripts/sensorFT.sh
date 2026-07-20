@@ -64,20 +64,20 @@ find_ws_setup() {
 # ---------------------------
 # Parse args
 # ---------------------------
-IFACE=""
+IFACE="eno2"
 RATE_HZ="50"
 FRAME_ID="${FRAME_ID_DEFAULT}"
 TOPIC="${TOPIC_DEFAULT}"
 
-TARE_SAMPLES="300"
-TARE_PERIOD_MS="20"
+TARE_SAMPLES="1" # 300
+TARE_PERIOD_MS="1" # 20
 
-WARMUP_S="15"
-STAB_SAMPLES="50"
+WARMUP_S="0" # 15
+STAB_SAMPLES="1" # 50
 STAB_PERIOD_MS="20"
 FORCE_STD="0.05"
 TORQUE_STD="0.005"
-MAX_WAIT="60.0"
+MAX_WAIT="0.1" # 60.0
 K_SIGMA="3.0"
 
 DISABLE_OFFLOAD="${DISABLE_OFFLOAD_DEFAULT}"
@@ -159,11 +159,18 @@ echo "  stability_force_std_thresh_N=${FORCE_STD} stability_torque_std_thresh_Nm
 echo "  tare_outlier_k_sigma=${K_SIGMA}"
 
 # ---------------------------
-# Run roslaunch as root in an isolated env
+# Run roslaunch as root, connecting to the existing ROS master.
+# -E preserves the user environment (ROS_MASTER_URI etc.)
+# unset ROS_IP: an empty string causes roslaunch to ignore ROS_MASTER_URI
 # ---------------------------
-sudo bash -lc "
+export ROS_MASTER_URI="${ROS_MASTER_URI:-http://localhost:11311}"
+unset ROS_IP
+echo "Connecting to ROS master: ${ROS_MASTER_URI}"
+
+sudo -E bash -c "
   source '${ROS_SETUP}'
   source '${WS_SETUP}'
+  unset ROS_IP
   exec roslaunch '${PKG}' '${LAUNCH}' \
     iface:='${IFACE}' frame_id:='${FRAME_ID}' topic:='${TOPIC}' rate_hz:='${RATE_HZ}' \
     tare_samples:='${TARE_SAMPLES}' tare_period_ms:='${TARE_PERIOD_MS}' \
@@ -171,4 +178,3 @@ sudo bash -lc "
     stability_force_std_thresh_N:='${FORCE_STD}' stability_torque_std_thresh_Nm:='${TORQUE_STD}' stability_max_wait_s:='${MAX_WAIT}' \
     tare_outlier_k_sigma:='${K_SIGMA}'
 "
-

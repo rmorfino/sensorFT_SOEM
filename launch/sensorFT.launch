@@ -1,18 +1,18 @@
 <launch>
-  <arg name="iface"     default="enx207bd51ab7ad" />
+  <arg name="iface"     default="eno2" /> <!-- was: eno1 -->
   <arg name="frame_id"  default="ft_sensor" />
   <arg name="topic"     default="/ft_sensor/wrench" />
   <arg name="rate_hz"   default="50" />
 
   <!-- Improved automatic tare: warm-up + stability gate + outlier rejection -->
-  <arg name="warmup_seconds"                 default="15" />
-  <arg name="stability_samples"              default="50" />
+  <arg name="warmup_seconds"                 default="0" />    <!-- was: 15 -->
+  <arg name="stability_samples"              default="1" />    <!-- was: 50 -->
   <arg name="stability_period_ms"            default="20" />
   <arg name="stability_force_std_thresh_N"   default="0.05" />
   <arg name="stability_torque_std_thresh_Nm" default="0.005" />
-  <arg name="stability_max_wait_s"           default="60.0" />
-  <arg name="tare_samples"                   default="300" />
-  <arg name="tare_period_ms"                 default="20" />
+  <arg name="stability_max_wait_s"           default="0.1" />  <!-- was: 60.0 -->
+  <arg name="tare_samples"                   default="1" />    <!-- was: 300 -->
+  <arg name="tare_period_ms"                 default="1" />    <!-- was: 20 -->
   <arg name="tare_outlier_k_sigma"           default="3.0" />
 
   <arg name="require_single_slave" default="true" />

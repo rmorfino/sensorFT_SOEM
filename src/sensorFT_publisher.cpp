@@ -420,7 +420,10 @@ int main(int argc, char** argv)
   while (ros::ok()) {
     FtRaw raw;
     if (!ft.read_ft_counts(raw)) {
-      ROS_WARN_THROTTLE(1.0, "SDO read failed.");
+      ROS_WARN("SDO read failed.");
+      ROS_INFO("Tare offset (counts): Fx=%d Fy=%d Fz=%d Tx=%d Ty=%d Tz=%d",
+           tareOffset.fx, tareOffset.fy, tareOffset.fz,
+           tareOffset.tx, tareOffset.ty, tareOffset.tz);
       ros::spinOnce();
       rate.sleep();
       continue;
